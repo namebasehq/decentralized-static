@@ -1,0 +1,18 @@
+<!doctype>
+<html>
+	<head>
+		<title> Handshake </title>
+	</head>
+	<body>
+		<h1> Welcome to the Handshake File Uploader </h1>
+		<div class="topnav">
+			<form method="POST" action="/upload" enctype="multipart/form-data">
+				<h5>Input file</h5>
+				<input type="file" name="file_data">
+				<input type="text" placeholder="Domain" name="domain">
+				<input type="text" placeholder="Path on domain" name="path">
+				<input type="submit" value="Upload">
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Namebase Handshake Upload Extension",
+  "short_name": "NHE",
+  "version": "0.0.2",
+  "description": "Uploads files to Handshake",
+  "icons": {
+    "16": "icon-16.png",
+    "24": "icon-24.png",
+    "32": "icon-32.png",
+    "64": "icon-64.png",
+    "128": "icon-128.png"
+  },
+	"browser_action": {
+    "browser_style": false,
+		"default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon-16.png",
+      "24": "icon-24.png",
+      "32": "icon-32.png",
+      "64": "icon-64.png",
+      "128": "icon-128.png"
+    } },
+	"permissions": [
+    "webRequest", "webRequestBlocking", "proxy", "notifications", "alarms", "tabs", "storage",
+    "<all_urls>"
+  ],
+  "homepage_url": "https://namebase.io"
+}
