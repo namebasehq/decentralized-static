@@ -2,7 +2,7 @@ require('dotenv').config()
 const crypto = require('crypto')
 const fs = require('fs')
 const formidable = require('formidable')
-const query = require('../query.js')
+const query = require('../gateway/query.js')
 
 async function uploadFromServer (req, res) {
   // Get path to uploaded file
@@ -11,7 +11,8 @@ async function uploadFromServer (req, res) {
       if (err) {
         console.log(err)
       }
-      resolve(files.fileData.path)
+      console.log(files)
+			resolve(files.file_data.path)
     })
   })
 

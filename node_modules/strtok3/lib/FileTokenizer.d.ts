@@ -1,0 +1,33 @@
+/// <reference types="node" />
+import { AbstractTokenizer } from './AbstractTokenizer';
+import { IFileInfo } from './types';
+export declare class FileTokenizer extends AbstractTokenizer {
+    private fd;
+    constructor(fd: number, fileInfo: IFileInfo);
+    /**
+     * Read buffer from file
+     * @param buffer
+     * @param offset is the offset in the buffer to start writing at; if not provided, start at 0
+     * @param length is an integer specifying the number of bytes to read, of not provided the buffer length will be used
+     * @param position is an integer specifying where to begin reading from in the file. If position is null, data will be read from the current file position.
+     * @returns Promise number of bytes read
+     */
+    readBuffer(buffer: Buffer, offset?: number, length?: number, position?: number): Promise<number>;
+    /**
+     * Peek buffer from file
+     * @param buffer
+     * @param offset is the offset in the buffer to start writing at; if not provided, start at 0
+     * @param length is an integer specifying the number of bytes to read, of not provided the buffer length will be used
+     * @param position is an integer specifying where to begin reading from in the file. If position is null, data will be read from the current file position.
+     * @param maybeless If set, will not throw an EOF error if the less then the requested length could be read
+     * @returns Promise number of bytes read
+     */
+    peekBuffer(buffer: Buffer, offset?: number, length?: number, position?: number, maybeless?: boolean): Promise<number>;
+    /**
+     * @param length - Number of bytes to ignore
+     * @return resolves the number of bytes ignored, equals length if this available, otherwise the number of bytes available
+     */
+    ignore(length: number): Promise<number>;
+    close(): Promise<void>;
+}
+export declare function fromFile(sourceFilePath: string): Promise<FileTokenizer>;

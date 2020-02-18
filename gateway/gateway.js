@@ -1,12 +1,12 @@
-require('dotenv').config()
-const process = require('process')
+const path = require('path')
+require('dotenv').config({path: path.resolve('../.env')})
 const query = require('./query.js')
 const fs = require('fs')
 const http = require('http')
 const HandshakeResolver = require('./hsResolver.js').HandshakeResolver
 const LRUcache = require('./fileLruCache.js')
 const crypto = require('crypto')
-const UploadServer = require('./server/server.js')
+const UploadServer = require('../server/server.js')
 
 const filesystemApi = require(process.env.FILESYSTEM_API)
 var resolver

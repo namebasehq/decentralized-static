@@ -32,8 +32,8 @@
   "standard": {
     "ignore": [
       "/upload-extension/popup.js",
-			"/upload-extension/bundle.js",
-			"/upload-extension/getPagesSource.js"
+      "/upload-extension/bundle.js",
+      "/upload-extension/getPagesSource.js"
     ]
   }
 }
