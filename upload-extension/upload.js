@@ -1,39 +1,36 @@
 const crypto = require('crypto')
 const http = require('http')
 
+async function uploadFileFromPopup (address, port, body, message) {
+  const hash = crypto.createHash('sha256')
+  hash.update(body)
+  const fileHash = await hash.digest('hex')
 
-async function uploadFileFromPopup(address, port, body, message) {
+  const source = '/' + fileHash
+  const fsPath = fileHash
 
-	const hash = crypto.createHash('sha256')
-	hash.update(body)
-	const file_hash = await hash.digest('hex')
+  const url = '/renter/upload' + '?source=' + source + '&fspath=' + fsPath + '&local=' + false
 
-	let source = '/' + file_hash
-	let fspath = file_hash 
+  const options = {
+    hostname: address,
+    port: port,
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
+  }
 
-	let url = '/renter/upload' + '?source=' + source + '&fspath=' + fspath + '&local=' + false 
+  message.innerText = 'Put the following hash in the DS record for domain : ' + fileHash
 
-	const options = {
-		hostname: address,
-		port: port,
-		path: url,
-		method: 'POST',
-		headers: {
-			'Content-Type' : 'application/json',
-			'Accept' : 'application/json'
-		}
-	}
-	
-	upload_page.innerText = 'Put the following hash in the DS record for domain : ' + file_hash
+  const req = http.request(options)
 
-	const req = http.request(options)
+  req.write(body)
 
-	req.write(body)
+  req.end()
 
-	req.end()
-
-	return file_hash
+  return fileHash
 }
-
 
 module.exports = uploadFileFromPopup
