@@ -29,7 +29,7 @@ The AWS Image comes pre-equipped with a Sia Daemon, gateway, and full-node that 
 However, this can be modified to disable the Sia Daemon and point to another node’s daemon or a different personal filesystem running either remotely or locally
 
 
-# Setting up your own Sia+Gateway AWS Image
+# Setting up your own Sia+Gateway AWS Image [IN PRODUCTION]
 
 ## Set up AWS Image with built-in Sia Daemon 
 
