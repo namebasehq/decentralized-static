@@ -2,7 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 
 class UploadServer {
-  constructor (port) {
+  constructor(port) {
     this.port = port
 
     this.app = express()
@@ -13,7 +13,7 @@ class UploadServer {
     this.routes = require('./routes.js')(this.app)
   }
 
-  open () {
+  open() {
     this.server = this.app.listen(this.port, () => {
       console.log('UploadServer listening on port %s', this.server.address().port)
     })
