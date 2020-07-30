@@ -14,9 +14,9 @@
 
 # Where things are
 
-Gateway - 127.53.53.53:80
+Gateway - `127.53.53.53:80`
 
-DNS Resolver - 127.53.53.53:53
+DNS Resolver - `127.53.53.53:53`
 
 # Creating a blog hosted by Sia-Handshake
 
@@ -41,7 +41,7 @@ where
 METHOD = `get` (retrieving records) or `put` (adding/updating records)
 
 SERVICE = which DNS settings you want to add, the three options are:
-	‘blockchain’ - for Handshake records that are ‘DS’, ‘TXT’, or ‘NS’
+	`blockchain` - for Handshake records that are `DS`, `TXT`, or `NS`
 
 	‘blockchain-advanced’ - Handshake accepts some additional record types, in order to send these create a Handshake resource record and send the hex as the RECORD_DATA (more documentation can be found here https://hsd-dev.org/guides/resource-records.html )
 
@@ -62,14 +62,3 @@ node namebaseApi.js put blockchain YOUR_DOMAIN ‘{ “records”: [{ “type”
 Keep in mind, that the blockchain endpoints will replace all existing records with the new json that is sent. So, if you only want to add another record, you have to get the current records and send them along with the new one. For deleting, you would need to resend all the current records except for the one you want to delete.
 
 The nameserver records are slightly different. It will only replace records if a record with the same type and host is specified. For example, if I have a TXT record set on foo.example, adding another TXT record on bar.example will not replace it. 
-
-Other Examples
-Update blockchain Skylink
-```
-node namebaseApi.js put blockchain example ‘{ “records”: [{ “type”: “TXT”, “host”: “”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
-```
-
-Delete nameserver TXT record on `foo.example`
-```
-node namebaseApi.js put nameserver example ‘{ “records”: [], “deleteRecords”: [{ “type”: “TXT”, “host”: “foo” }] }’
-```
