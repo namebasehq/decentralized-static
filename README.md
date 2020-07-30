@@ -31,7 +31,6 @@ Click ‘NEW API KEY’ in the top right.
 Replace the `ACCESS_KEY` and `SECRET_KEY` variables in lines 3-4 of the script with the new keys.
 
 
-Using the Script
 Now that your script is authenticated, you can test out the queries. The script call looks like:
 ```
 npm run get-settings SERVICE DOMAIN
