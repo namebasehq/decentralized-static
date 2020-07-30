@@ -4,7 +4,9 @@
   "description": "Gateway for resolving content for Handshake domains",
   "main": "gateway.js",
   "scripts": {
-    "start": "node ./gateway/launch.js"
+    "start": "node ./gateway/launch.js",
+    "get-settings": "node ./namebaseApi.js get",
+    "update-settings": "node ./namebaseApi.js put"
   },
   "author": "Nick Ulven",
   "license": "ISC",
