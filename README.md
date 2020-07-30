@@ -49,8 +49,10 @@ SERVICE = which DNS settings you want to add, the three options are:
 
 DOMAIN = your Handshake domain
 
-RECORD_DATA = only necessary for METHOD=`put`; the json format varies slightly based on the SERVICE, be sure to double check with the full documentation
+RECORD_DATA = the json format varies slightly based on the `SERVICE`, be sure to double check with the full documentation
 
+More information on the Namebase DNS Settings API can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
+More information on the Handshake Resource Records can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
 
 ### Connecting Your App
 
@@ -67,8 +69,6 @@ You’ll need to set a `TXT` record with the skylink for your app. Here’s what
 ```
 npm run update-settings blockchain YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “@”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
 ```
-
-More information on the Namebase DNS Settings API can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
 
 Keep in mind that the blockchain endpoints will replace all existing records with the new json that is sent. So, if you only want to add another record, you have to get the current records and send them along with the new one. For deleting, you would need to resend all the current records except for the one you want to delete.
 
