@@ -1,20 +1,10 @@
 # Environment variables
 
-`SIA_DAEMON` - boolean if the built-in Sia daemon should be launched
+`LOCAL_SERVER_DIRECTORY` - the website content will be downloaded before being displayed to your browser, this directory will store all of the downloaded files
 
-`LOCAL_FILESYSTEM` - true if filesystem is on the same machine as the gateway
+`LOCAL_GATEWAY` - true if the gateway is only being use by you and does not need to be opened to the internet
 
-`FILESYSTEM_ADDRESS` - ip address of filesystem; must be ‘127.0.0.1’ if `LOCAL_FILESYSTEM`=true
-
-`FILESYSTEM_PORT` - port the filesystem is listening to
-
-`FILESYSTEM_API` - absolute or relative path to the Nodejs file where the custom filesystem api is stored
-
-`LOCAL_SERVER_DIRECTORY` - local directory where all files downloaded from the filesystem will be stored
-
-`UPLOAD_SERVER_PORT` - the gateway launches a simple webpage to enable file uploads to the filesystem; this defines which local port it listens on
-
-`MAX_LOCALLY_STORED_SITES` - the number of webpages you would like stored locally in cache to reduce time spent downloading frequently viewed sites
+`CACHE_SIZE` - the number of webpages you would like stored locally in cache to reduce time spent downloading frequently viewed sites
 
 # Where things are
 
