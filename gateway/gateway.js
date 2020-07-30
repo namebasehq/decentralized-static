@@ -17,14 +17,16 @@ class Gateway {
     resolver = new HandshakeResolver();
 
     //this.uploadServer = new UploadServer(process.env.UPLOAD_SERVER_PORT);
+    this.host = process.env.LOCAL_GATEWAY ? '127.53.53.53' : '0.0.0.0';
+    this.port = '80';
 
     this.httpServer = http.createServer();
     this.httpServer.on('request', this.handleHttpRequest);
-    this.httpServer.on('listening', () => console.log('Gateway server listening on', '127.53.53.53:80'));
+    this.httpServer.on('listening', () => console.log('Gateway server listening on', `${this.host}:${this.port}`));
   }
 
   async open() {
-    this.httpServer.listen('80', '127.53.53.53');
+    this.httpServer.listen(this.port, this.host);
 
     //this.uploadServer.open();
   }
@@ -57,28 +59,7 @@ class Gateway {
         resolve(data);
       });
     });
-
-    // Verify the recieved hash matches the hash of the received data
-    res.writeHead(200);
-    res.write(fileData, (err) => {
-      res.end();
-    });
-    /*
-    if (!verifyHash(fileData, skylink)) {
-      res.write('Error: file data does not match hash');
-      res.end();
-    } else {
-    }
-    */
   }
-}
-
-async function verifyHash(fileData, dsHash) {
-  const hash = crypto.createHash('sha256');
-  hash.update(fileData);
-  const fileHash = await hash.digest('hex');
-
-  return fileHash === dsHash;
 }
 
 module.exports = Gateway

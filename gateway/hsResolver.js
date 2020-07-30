@@ -1,8 +1,10 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve('./.env') });
 const dns = require('native-dns');
 
 class HandshakeResolver {
   constructor() {
-    this.server = { address: '44.231.6.183', port: 53, type: 'udp' };
+    this.server = { address: process.env.NAMEBASE_NAMESERVER, port: 53, type: 'udp' };
     this.timeout = 1000;
   }
 
