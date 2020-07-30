@@ -4,30 +4,32 @@
   "description": "Gateway for resolving content for Handshake domains",
   "main": "gateway.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./gateway/launch.js",
+    "get-settings": "node ./namebaseApi.js get",
+    "update-settings": "node ./namebaseApi.js put"
   },
   "author": "Nick Ulven",
   "license": "ISC",
   "dependencies": {
+    "@nebulous/skynet": "^1.0.1",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "file-type": "^13.1.2",
     "formidable": "^1.2.1",
     "fs": "0.0.1-security",
     "http": "0.0.0",
     "lru-cache": "^5.1.1",
     "native-dns": "^0.7.0",
+    "node-fetch": "^2.6.0",
+    "prettier": "^2.0.5",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "standard": "^14.3.1"
+    "eslint-plugin-prettier": "^3.1.2"
   },
   "standard": {
     "ignore": [

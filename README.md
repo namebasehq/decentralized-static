@@ -1,161 +1,94 @@
 # Environment variables
 
-`SIA_DAEMON` - boolean if the built-in Sia daemon should be launched
+`LOCAL_GATEWAY` - true if the gateway is only being use by you and does not need to be opened to the internet
 
-`LOCAL_FILESYSTEM` - true if filesystem is on the same machine as the gateway
+`LOCAL_SERVER_DIRECTORY` - the website content will be downloaded before being displayed to your browser, this directory will store all of the downloaded files
 
-`FILESYSTEM_ADDRESS` - ip address of filesystem; must be ‘127.0.0.1’ if `LOCAL_FILESYSTEM`=true
 
-`FILESYSTEM_PORT` - port the filesystem is listening to
+`HNS_NAMESERVER_HOST` - address of Handshake resolver
 
-`FILESYSTEM_API` - absolute or relative path to the Nodejs file where the custom filesystem api is stored
+`HNS_NAMESERVER_PORT` - port of Handshake resolver
 
-`LOCAL_SERVER_DIRECTORY` - local directory where all files downloaded from the filesystem will be stored
 
-`UPLOAD_SERVER_PORT` - the gateway launches a simple webpage to enable file uploads to the filesystem; this defines which local port it listens on
-
-`MAX_LOCALLY_STORED_SITES` - the number of webpages you would like stored locally in cache to reduce time spent downloading frequently viewed sites
+`CACHE` - the number of webpages you would like stored locally in cache to reduce time spent downloading frequently viewed sites
 
 # Where things are
 
-Gateway - 127.53.53.53:80
+Gateway - `127.53.53.53:80`
 
-Upload Server - website hosted on [GATEWAY IP]:`UPLOAD_SERVER_PORT`
+DNS Resolver - `127.53.53.53:53`
 
-HSD DNS Recursive Resolver - 127.0.0.1:25350
+# Creating a blog hosted by Sia-Handshake
 
-The AWS Image comes pre-equipped with a Sia Daemon, gateway, and full-node that can receive requests from any browser and serve content
+## Getting started
 
-However, this can be modified to disable the Sia Daemon and point to another node’s daemon or a different personal filesystem running either remotely or locally
+### Get Namebase API key
 
+Login to your Namebase account and go to `https://namebase.io/pro/keys`.
 
-# Setting up your own Sia+Gateway AWS Image [IN PRODUCTION]
+Click ‘NEW API KEY’ in the top right.
 
-## Set up AWS Image with built-in Sia Daemon 
+Replace the `ACCESS_KEY` and `SECRET_KEY` variables in lines 3-4 of the script with the new keys.
 
-Set `LOCAL_SERVER_DIRECTORY`, `UPLOAD_SERVER_PORT` and `MAX_LOCALLY_STORED_SITES` and leave the rest of the default values
 
-Run `main.js`
+Now that your script is authenticated, you can test out the queries. The script call looks like:
+```
+npm run get-settings SERVICE DOMAIN
+npm run update-settings SERVICE DOMAIN RECORD_DATA
+```
+where
 
-If Sia is previously unsetup, it will take the time to create and sync a wallet. The console will print ‘Wallet unlocked’ when this process is done. You can double check by running `siac wallet` and checking the value of “rescanning” and “unlocked”. Make note of a few important strings:
+`SERVICE` - which DNS settings you want to add, the three options are:
 
--Wallet Seed - the encryption password for your wallet, it will be stored in a file called `seed`
+- `blockchain` - for Handshake records that are `DS`, `TXT`, or `NS`
+	
+- `blockchain-advanced` - Handshake accepts some additional record types, in order to send these create a Handshake resource record and send the hex as the `RECORD_DATA`
 
--Wallet Address - the address used to send money to your wallet, it will be stored in a file called `address`
+- `nameserver` - Namebase’s own nameservers which enables users to set `A`, `CNAME`, `ALIAS`, `NS`, `DS`, and `TXT` records either on the root or a subdomain. All names won on Namebase should have this configured by default.
 
-Sia operates by negotiating contracts with hosts according to ‘allowances’ of how much money you would like to allocate to uploading/downloading/storing during a set period. After the wallet is synced, you must send coin to the wallet for the daemon launch to continue.
 
-Once you put money in your wallet, the script will set the allowance with default values, if you would like to set these values yourself, run `siac renter setAllowance` (keep in mind that setting more restrictive settings may make it more difficult to generate contracts). The daemon will now start to generate contracts (should take about 40 minutes). The console will read ‘Upload ready’ when it is complete. You can double check this by running `siac renter uploadready` and checking the value of “ready”. 
+`DOMAIN` - your Handshake domain
 
-You are now ready to upload content!
+`RECORD_DATA` - the json format varies slightly based on the `SERVICE`, be sure to double check with the full documentation
 
-## Set up AWS Image with outside filesystem
+More information on the Namebase DNS Settings API can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
 
-Leave `HANDSHAKE_GATEWAY` as default and set the rest of the variables according to preference. Keep in mind, assigning a remote address to `FILESYSTEM_ADDRESS` while keeping `LOCAL_FILESYSTEM` as true will cause the gateway to not work. (If you would like to use our Sia Daemon, use the following settings:)
+More information on the Handshake Resource Records can be found [here](https://hsd-dev.org/guides/resource-records.html).
 
--`SIA_DAEMON` = false
+### Connecting Your App
 
--`LOCAL_FILESYSTEM`=false
+#### Upload your file to Skynet
+Run this curl command to upload your file to Skynet
+```
+curl -X POST "https://siasky.net/skynet/skyfile" -F file=@[FILE]
+```
 
--`FILESYSTEM_ADDRESS`=35.167.214.162
+If it succeeds, you'll receive the skylink and merkle root to your file. You'll use the skylink in the next step.
 
--`FILESYSTEM_PORT`=5300
+#### Connecting your Skynet file to Handshake
+You’ll need to set a `TXT` record with the skylink for your app. Here’s what the call should look like:
+```
+npm run update-settings nameserver YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “@”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
+```
 
-Run `main.js` to start the gateway and the full-node
+Keep in mind that the blockchain endpoints will replace all existing records with the new json that is sent. So, if you only want to add another record, you have to get the current records and send them along with the new one. For deleting, you would need to resend all the current records except for the one you want to delete.
 
-If you are using a filesystem other than the built-in daemon or our daemon, be sure you meet the specifications of the filesystem api explained here.
+The nameserver records are slightly different. It will only replace records if a record with the same type and host is specified. For example, if I have a `TXT` record set on foo.example, adding another `TXT` record on bar.example will not replace it.
 
-You are now ready to upload content!
+#### Setting up your Sia-Handshake Gateway
+First set your environment variables.
 
+Unless you want to open your resolver to the internet to allow other servers to resolve off of your gateway, leave `LOCAL_GATEWAY` as 'true'.
 
-# How to upload content
+Make a directory to store the skynet content of the sites you visit. It will act as a cache and will only store as many sites as `CACHE` is set to. Set `LOCAL_SERVER_DIRECTORY` to the full path of this directory.
 
-## Save open website (chrome-extension)
+Finally, set `HNS_NAMESERVER_HOST` and `HNS_NAMESERVER_PORT` to the address and port of a Handshake resolver. NextDNS is recommended.
 
-Open the website you want to save to your domain
 
-Click the chrome extension and double check the settings to ensure the address and port match that of the gateway you want to upload to
+#### Running the gateway
+In order to run the DNS resolver, you're going to need to take over port 53. If your system has a native resolver running on port 53, you need to stop it before running the gateway.
 
-Copy the hash that gets returned and set the DNS settings of your domain as follows:
-
->[DOMAIN] IN A [GATEWAY IP]
-
->[DOMAIN] IN DS 0000 8 2 [HASH]
-
-
-## Upload local content
-
-Open the upload server hosted on [GATEWAY IP]:`UPLOAD_SERVER_PORT`
-
-Choose the file you want to upload and click ‘submit’
-
-Copy the hash that gets returned and set the DNS settings of your domain as follows:
-
->[DOMAIN] IN A [GATEWAY IP]
-
->[DOMAIN] IN DS 0000 8 2 [HASH]
-
-
-# Plug-in filesystem API
-
-## Receive HTTP requests from gateway
-
-If you would like to plug-in a filesystem that receives http requests from the gateway, it must be able to handle the following requests:
-
-
->url: '/renter/download?fspath=[]&destination=[]&local=[]'
-
->method: ‘GET’
-
-Downloads the content from the filesystem addressed at `fspath` and saves it at some `destination` locally; if `local` is false, your filesystem should be able to read the downloaded file and write it to the `response` to transfer the file to the gateway machine
-
-`fspath` - absolute path; where on the filesystem the content is stored
-
-`destination` - absolute path; where the file should be saved locally
-
-`local` - boolean; true if the filesystem and the gateway are on the same machine
-
-
->url: '/renter/upload?source=[]&fspath=[]&local=[]'
-
->method: 'POST'
-
-Uploads the content from the local path `source` and saves it on the filesystem at some address `fspath`; if `local` is false, your filesystem should be able to read the uploaded file from the `request` and write it to the `source` path to transfer the file to the filesystem machine
-
-`source` - absolute path; where the file should be saved
-
-`fspath` - absolute path; where on the filesystem the content is stored
-
-`local` - boolean; true if the filesystem and the gateway are on the same machine
-
-### How to set up?
-
-Set `FILESYSTEM_ADDRESS`and `FILESYSTEM_PORT` to the address where the http query will be received
-
-If the address is local, set `LOCAL_FILESYSTEM`=true.
-
-
-## Receive function calls from gateway (gateway and filesystem must be on the same system)
-
-If you would like to plug-in a filesystem that receives function calls from the gateway, the api must be able to handle the following calls:
-
-
->`fsapi.download(fspath, destination)`
-
-Downloads the content from the filesystem addressed at `fspath` and saves it at some `destination` locally
-
-`fspath` - absolute path; where on the filesystem the content is stored
-
-`destination` - absolute path; where the file should be saved locally
-
->`fsapi.upload(source, fspath)`
-
-Uploads the content from the local path `source` and saves it on the filesystem at some address `fspath`
-
-‘source’ - absolute path; where the file should be saved
-
-‘fspath’ - absolute path; where on the filesystem the content is stored
-
-### How to set up?
-
-Set `FILESYSTEM_API` to the relative or absolute path to the Nodejs file that contains your filesystem’s api.
+To start:
+```
+sudo npm run start
+```
