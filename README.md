@@ -53,6 +53,7 @@ where
 `RECORD_DATA` - the json format varies slightly based on the `SERVICE`, be sure to double check with the full documentation
 
 More information on the Namebase DNS Settings API can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
+
 More information on the Handshake Resource Records can be found [here](https://hsd-dev.org/guides/resource-records.html).
 
 ### Connecting Your App
