@@ -68,7 +68,7 @@ If it succeeds, you'll receive the skylink and merkle root to your file. You'll 
 #### Connecting your Skynet file to Handshake
 You’ll need to set a `TXT` record with the skylink for your app. Here’s what the call should look like:
 ```
-npm run update-settings blockchain YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “@”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
+npm run update-settings nameserver YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “@”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
 ```
 
 Keep in mind that the blockchain endpoints will replace all existing records with the new json that is sent. So, if you only want to add another record, you have to get the current records and send them along with the new one. For deleting, you would need to resend all the current records except for the one you want to delete.
