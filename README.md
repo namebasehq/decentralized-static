@@ -1,10 +1,14 @@
 # Environment variables
 
 `LOCAL_GATEWAY` - true if the gateway is only being use by you and does not need to be opened to the internet
+
 `LOCAL_SERVER_DIRECTORY` - the website content will be downloaded before being displayed to your browser, this directory will store all of the downloaded files
 
+
 `HNS_NAMESERVER_HOST` - address of Handshake resolver
+
 `HNS_NAMESERVER_PORT` - port of Handshake resolver
+
 
 `CACHE` - the number of webpages you would like stored locally in cache to reduce time spent downloading frequently viewed sites
 
