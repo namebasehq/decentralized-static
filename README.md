@@ -17,88 +17,8 @@ DNS Resolver - 127.53.53.53:53
 # Creating a blog hosted by Sia-Handshake
 
 ## Getting started
-First step is to 
 
-Here’s a quick Node.js script to get you started:
-```
- const fetch = require('node-fetch');
- 
- const ACCESS_KEY = '';
- const SECRET_KEY = '';
- 
- const credentials = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`);
- const encodedCredentials = credentials.toString('base64');
- const authorization = `Basic ${encodedCredentials}`;
- 
- async function get(endpoint, body = null) {
-   const options = {
-     method: 'GET',
-     headers: {
-       Authorization: authorization,
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-     },
-   };
-   const url = `https://namebase.io${endpoint}`;
-   return fetch(url, options)
-     .then(res => res.json())
-     .catch(err => err);
- }
- 
- async function put(endpoint, body) {
-   const options = {
-     method: 'PUT',
-      body: body,
-     headers: {
-       Authorization: authorization,
-       Accept: 'application/json',
-       'Content-Type': 'application/json',
-     },
-   };
-   const url = `https://namebase.io${endpoint}`;
-   return fetch(url, options)
-     .then(res => res.json())
-     .catch(err => err);
- }
- 
- async function main() {
-   const args = process.argv.slice(2);
- 
-   let func, path, data;
- 
-   const domain = args[2];
- 
-   if (args[0] === 'get') {
-     func = get;
-   } else if (args[0] === 'put') {
-     func = put;
- 
-     if (args.length < 4) throw new Error('Put requires 4 arguments');
- 
-     data = args[3];
-   } else {
-     throw new Error("Method should be either 'get' or 'put'");
-   }
- 
-   if (args[1] === 'blockchain') {
-     path = `/api/v0/dns/domains/${domain}`;
-   } else if (args[1] === 'blockchain-advanced') {
-     path = `/api/v0/dns/domains/${domain}/advanced`;
-   } else if (args[1] === 'nameserver') {
-     path = `/api/v0/dns/domains/${domain}/nameserver`;
-   } else {
-     throw new Error("Service should be 'blockchain', 'blockchain-advanced' or 'nameserver'");
-   }
- 
-   return func(path, data);
- }
-
- main().then(res => {
-   console.log(res);
- });
-```
-
-Get Namebase API key
+### Get Namebase API key
 
 Login to your Namebase account and go to `https://namebase.io/pro/keys`.
 
@@ -129,10 +49,10 @@ DOMAIN = your Handshake domain
 RECORD_DATA = only necessary for METHOD=’put’; the json format varies slightly based on the SERVICE, be sure to double check with the full documentation
 
 
-Connecting Your App
-For setting up the Skynet Portal, you’ll need to set a `TXT` record with the skylink for your app. Here’s what the call should look like:
+### Connecting Your App
+You’ll need to set a `TXT` record with the skylink for your app. Here’s what the call should look like:
 ```
-node namebaseApi.js put blockchain YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “”, “value”: “[YOUR_SKYLINK]”, “ttl”: 0 }] }’
+node namebaseApi.js put blockchain YOUR_DOMAIN ‘{ “records”: [{ “type”: “TXT”, “host”: “”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
 ```
 
 Keep in mind, that the blockchain endpoints will replace all existing records with the new json that is sent. So, if you only want to add another record, you have to get the current records and send them along with the new one. For deleting, you would need to resend all the current records except for the one you want to delete.
@@ -142,7 +62,7 @@ The nameserver records are slightly different. It will only replace records if a
 Other Examples
 Update blockchain Skylink
 ```
-node namebaseApi.js put blockchain example ‘{ “records”: [{ “type”: “TXT”, “host”: “”, “value”: “[YOUR_SKYLINK]”, “ttl”: 0 }] }’
+node namebaseApi.js put blockchain example ‘{ “records”: [{ “type”: “TXT”, “host”: “”, “value”: “skylink=[YOUR_SKYLINK]”, “ttl”: 0 }] }’
 ```
 
 Delete nameserver TXT record on `foo.example`
