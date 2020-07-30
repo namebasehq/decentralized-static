@@ -5,11 +5,11 @@ const http = require('http');
 const crypto = require('crypto');
 const skynet = require('@nebulous/skynet');
 const HandshakeResolver = require('./hsResolver.js');
+const DnsResolver = require('./dnsResolver.js');
 const LRUcache = require('./fileLruCache.js');
-const UploadServer = require('../server/server.js');
 
 var resolver;
-var fileCache = new LRUcache(process.env.MAX_LOCALLY_STORED_SITES);
+var fileCache = new LRUcache(process.env.CACHE_SIZE);
 
 class Gateway {
   constructor() {
@@ -23,31 +23,33 @@ class Gateway {
     this.httpServer = http.createServer();
     this.httpServer.on('request', this.handleHttpRequest);
     this.httpServer.on('listening', () => console.log('Gateway server listening on', `${this.host}:${this.port}`));
+
+    this.dnsServer = new DnsResolver(resolver);
   }
 
   async open() {
     this.httpServer.listen(this.port, this.host);
-
-    //this.uploadServer.open();
+    this.dnsServer.open();
   }
 
   async handleHttpRequest(req, res) {
     const domainName = req.headers.host;
-    const destination = process.env.LOCAL_SERVER_DIRECTORY + '/dest' + '.html';
+    const destination = `${process.env.LOCAL_SERVER_DIRECTORY}/${domainName}.html`;
     console.log('Request for', domainName);
 
     let skylink;
-    if (!fileCache.has(domainName)) {
-      skylink = await resolver.getTXT(domainName);
+    const cache = !!process.env.CACHE_SIZE ? fileCache.has(domainName) : null;
+    if (!cache) {
+      const txt = await resolver.getTXT(domainName);
+      skylink = txt.split('=')[1];
 
-      console.log('File not in cache');
       await skynet.DownloadFile(
         destination,
         skylink,
         skynet.DefaultDownloadOptions
       );
 
-      fileCache.set(domainName, skylink);
+      if (!!process.env.CACHE_SIZE) fileCache.set(domainName, skylink);
     }
 
     // Read the newly downloaded file and write to response
@@ -58,6 +60,10 @@ class Gateway {
         }
         resolve(data);
       });
+    });
+
+    res.write(fileData, (err) => {
+      res.end();
     });
   }
 }

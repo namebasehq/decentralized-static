@@ -4,7 +4,7 @@
   "description": "Gateway for resolving content for Handshake domains",
   "main": "gateway.js",
   "scripts": {
-    "start": "sudo node ./gateway/launch.js"
+    "start": "node ./gateway/launch.js"
   },
   "author": "Nick Ulven",
   "license": "ISC",

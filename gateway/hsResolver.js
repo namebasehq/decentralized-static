@@ -4,7 +4,7 @@ const dns = require('native-dns');
 
 class HandshakeResolver {
   constructor() {
-    this.server = { address: process.env.NAMEBASE_NAMESERVER, port: 53, type: 'udp' };
+    this.server = { address: process.env.HNS_NAMESERVER_HOST, port: process.env.HNS_NAMESERVER_PORT, type: 'udp' };
     this.timeout = 1000;
   }
 
