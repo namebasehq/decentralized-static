@@ -39,20 +39,21 @@ npm run update-settings SERVICE DOMAIN RECORD_DATA
 ```
 where
 
-SERVICE = which DNS settings you want to add, the three options are:
-	`blockchain` - for Handshake records that are `DS`, `TXT`, or `NS`
+`SERVICE` - which DNS settings you want to add, the three options are:
 
-	`blockchain-advanced` - Handshake accepts some additional record types, in order to send these create a Handshake resource record and send the hex as the RECORD_DATA (more documentation can be found here https://hsd-dev.org/guides/resource-records.html )
+- `blockchain` - for Handshake records that are `DS`, `TXT`, or `NS`
+	
+- `blockchain-advanced` - Handshake accepts some additional record types, in order to send these create a Handshake resource record and send the hex as the `RECORD_DATA`
 
-	`nameserver` - Namebase’s own nameservers which enables users to set `A`, `CNAME`, `ALIAS`, `NS`, `DS`, and `TXT` records either on the root or a subdomain. All names won on Namebase should have this configured by default.
+- `nameserver` - Namebase’s own nameservers which enables users to set `A`, `CNAME`, `ALIAS`, `NS`, `DS`, and `TXT` records either on the root or a subdomain. All names won on Namebase should have this configured by default.
 
 
-DOMAIN = your Handshake domain
+`DOMAIN` - your Handshake domain
 
-RECORD_DATA = the json format varies slightly based on the `SERVICE`, be sure to double check with the full documentation
+`RECORD_DATA` - the json format varies slightly based on the `SERVICE`, be sure to double check with the full documentation
 
 More information on the Namebase DNS Settings API can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
-More information on the Handshake Resource Records can be found [here](https://github.com/namebasehq/api-documentation/blob/master/dns-settings-api.md).
+More information on the Handshake Resource Records can be found [here](https://hsd-dev.org/guides/resource-records.html).
 
 ### Connecting Your App
 
