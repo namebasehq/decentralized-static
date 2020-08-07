@@ -17,7 +17,7 @@ class Gateway {
     resolver = new HandshakeResolver();
 
     //this.uploadServer = new UploadServer(process.env.UPLOAD_SERVER_PORT);
-    this.host = process.env.LOCAL_GATEWAY ? '127.53.53.53' : '0.0.0.0';
+    this.host = process.env.LOCAL_GATEWAY === 'true' ? '127.53.53.53' : '0.0.0.0';
     this.port = '80';
 
     this.httpServer = http.createServer();
